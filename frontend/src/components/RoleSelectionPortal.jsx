@@ -332,35 +332,20 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-cyan-400" /> Phone Number
-                          </label>
-                          <input
-                            type="text"
-                            value={userPhone}
-                            onChange={(e) => setUserPhone(e.target.value)}
-                            placeholder="+91 98765 43210"
-                            className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 text-white font-mono text-xs outline-none"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
-                            <KeyRound className="w-3.5 h-3.5 text-cyan-400" /> Create Password
-                          </label>
-                          <input
-                            type="password"
-                            value={userPassword}
-                            onChange={(e) => {
-                              setUserPassword(e.target.value);
-                              if (userError) setUserError('');
-                            }}
-                            placeholder="••••••••"
-                            className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
+                          <KeyRound className="w-3.5 h-3.5 text-cyan-400" /> Create Password
+                        </label>
+                        <input
+                          type="password"
+                          value={userPassword}
+                          onChange={(e) => {
+                            setUserPassword(e.target.value);
+                            if (userError) setUserError('');
+                          }}
+                          placeholder="••••••••"
+                          className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
+                        />
                       </div>
 
                       {userError && (
