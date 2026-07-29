@@ -117,7 +117,7 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fadeIn">
       <div className="max-w-4xl w-full space-y-8 text-center">
-        
+
         {/* Portal Header */}
         <div className="space-y-4">
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold font-mono shadow-md">
@@ -137,11 +137,10 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
           <div className="flex items-center justify-center max-w-md mx-auto bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 font-mono shadow-xl">
             <button
               onClick={() => setSelectedPortal('user')}
-              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
-                selectedPortal === 'user'
-                  ? 'bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/30 scale-[1.02]'
-                  : 'text-slate-400 hover:text-white'
-              }`}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${selectedPortal === 'user'
+                ? 'bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/30 scale-[1.02]'
+                : 'text-slate-400 hover:text-white'
+                }`}
             >
               <User className="w-4 h-4" />
               <span>Customer Portal</span>
@@ -149,11 +148,10 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
 
             <button
               onClick={() => setSelectedPortal('admin')}
-              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
-                selectedPortal === 'admin'
-                  ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30 scale-[1.02]'
-                  : 'text-slate-400 hover:text-white'
-              }`}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${selectedPortal === 'admin'
+                ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30 scale-[1.02]'
+                : 'text-slate-400 hover:text-white'
+                }`}
             >
               <Lock className="w-4 h-4" />
               <span>Official Admin</span>
@@ -163,15 +161,14 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
 
         {/* 2 Portal Cards Grid with 3D Shimmer & Spring Animations */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left pt-4">
-          
+
           {/* INTERFACE 1: USER / CUSTOMER PORTAL CARD */}
           <div
             onClick={() => setSelectedPortal('user')}
-            className={`glass-panel-cyan rounded-3xl p-8 border relative overflow-hidden flex flex-col justify-between group transition-all duration-500 shadow-2xl cursor-pointer ${
-              selectedPortal === 'user'
-                ? 'portal-card-cyan-active scale-[1.02] border-cyan-400 shadow-cyan-500/30'
-                : 'border-cyan-500/30 hover:border-cyan-400/60 hover:-translate-y-1 opacity-90 hover:opacity-100'
-            }`}
+            className={`glass-panel-cyan rounded-3xl p-8 border relative overflow-hidden flex flex-col justify-between group transition-all duration-500 shadow-2xl cursor-pointer ${selectedPortal === 'user'
+              ? 'portal-card-cyan-active scale-[1.02] border-cyan-400 shadow-cyan-500/30'
+              : 'border-cyan-500/30 hover:border-cyan-400/60 hover:-translate-y-1 opacity-90 hover:opacity-100'
+              }`}
           >
             <div className="shimmer-light" />
             <div className="absolute -right-16 -top-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -208,33 +205,31 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                 </div>
               ) : (
                 <div className="space-y-4 pt-2 animate-fadeIn">
-                  
+
                   {/* Auth Mode Toggle Pill */}
                   <div className="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 font-mono">
                     <button
                       type="button"
                       onClick={() => { setUserAuthMode('login'); setUserError(''); setUserSuccessMsg(''); }}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-                        userAuthMode === 'login'
-                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${userAuthMode === 'login'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                        }`}
                     >
                       <LogIn className="w-3.5 h-3.5" />
-                      <span>Existing Login</span>
+                      <span>Login</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => { setUserAuthMode('signup'); setUserError(''); setUserSuccessMsg(''); }}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-                        userAuthMode === 'signup'
-                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${userAuthMode === 'signup'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                        }`}
                     >
                       <UserPlus className="w-3.5 h-3.5" />
-                      <span>First-Time Sign Up</span>
+                      <span>Sign Up</span>
                     </button>
                   </div>
 
@@ -288,7 +283,7 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                       >
                         {userLoading ? <span>Authenticating Credentials...</span> : (
                           <>
-                            <span>Authenticate & Open User Interface</span>
+                            <span>Submit</span>
                             <ArrowRight className="w-4 h-4" />
                           </>
                         )}
@@ -370,7 +365,7 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                         {userLoading ? <span>Creating Account...</span> : (
                           <>
                             <UserPlus className="w-4 h-4" />
-                            <span>Create Account & Launch Interface</span>
+                            <span>Create Account</span>
                           </>
                         )}
                       </button>
@@ -398,11 +393,10 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
           {/* INTERFACE 2: OFFICIAL ADMIN / UNDERWRITER PORTAL CARD */}
           <div
             onClick={() => setSelectedPortal('admin')}
-            className={`glass-panel-fuchsia rounded-3xl p-8 border relative overflow-hidden flex flex-col justify-between group transition-all duration-500 shadow-2xl cursor-pointer ${
-              selectedPortal === 'admin'
-                ? 'portal-card-purple-active scale-[1.02] border-purple-400 shadow-purple-500/30'
-                : 'border-purple-500/30 hover:border-purple-400/60 hover:-translate-y-1 opacity-90 hover:opacity-100'
-            }`}
+            className={`glass-panel-fuchsia rounded-3xl p-8 border relative overflow-hidden flex flex-col justify-between group transition-all duration-500 shadow-2xl cursor-pointer ${selectedPortal === 'admin'
+              ? 'portal-card-purple-active scale-[1.02] border-purple-400 shadow-purple-500/30'
+              : 'border-purple-500/30 hover:border-purple-400/60 hover:-translate-y-1 opacity-90 hover:opacity-100'
+              }`}
           >
             <div className="shimmer-light" />
             <div className="absolute -right-16 -top-16 w-60 h-60 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -468,7 +462,7 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                     disabled={adminLoading}
                     className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 transition flex items-center justify-center gap-2"
                   >
-                    <span>Authenticate & Open Admin Interface</span>
+                    <span>Submit</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
