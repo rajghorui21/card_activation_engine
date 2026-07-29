@@ -55,8 +55,13 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
     }
   };
 
-  const handleUserRegisterSubmit = async (e) => {
-    e.preventDefault();
+  // Sign Up verification states
+  const [signUpStep, setSignUpStep] = useState('details'); // 'details' or 'verify'
+  const [verificationCode, setVerificationCode] = useState('');
+  const [demoCodeHint, setDemoCodeHint] = useState('');
+
+  const handleSendVerificationCode = async (e) => {
+    if (e) e.preventDefault();
     if (!userName.trim()) {
       setUserError("Please enter your full name");
       return;
@@ -75,21 +80,45 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
     setUserSuccessMsg('');
 
     try {
-      const res = await axios.post('/api/auth/register', {
+      const res = await axios.post('/api/auth/send-verification-code', { email: userEmail.trim() });
+      if (res.data.status === 'SUCCESS') {
+        setDemoCodeHint(res.data.code);
+        setUserSuccessMsg(`Verification code sent to ${userEmail.trim()}!`);
+        setSignUpStep('verify');
+      }
+    } catch (err) {
+      setUserError(err.response?.data?.detail || "Failed to send verification code");
+    } finally {
+      setUserLoading(false);
+    }
+  };
+
+  const handleVerifyCodeSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!verificationCode.trim()) {
+      setUserError("Please enter the verification code sent to your email");
+      return;
+    }
+
+    setUserLoading(true);
+    setUserError('');
+    setUserSuccessMsg('');
+
+    try {
+      const res = await axios.post('/api/auth/verify-code-register', {
         name: userName.trim(),
         email: userEmail.trim(),
-        phone: userPhone.trim() || "+91 98765 43210",
-        password: userPassword.trim()
+        password: userPassword.trim(),
+        code: verificationCode.trim()
       });
       if (res.data.status === 'SUCCESS' && res.data.user) {
-        setUserSuccessMsg(res.data.message);
+        setUserSuccessMsg("Email verified successfully! Creating account...");
         setTimeout(() => {
           onSelectUserMode(res.data.user);
         }, 800);
       }
     } catch (err) {
-      const detail = err.response?.data?.detail || "Registration failed. Please check details.";
-      setUserError(detail);
+      setUserError(err.response?.data?.detail || "Invalid verification code");
     } finally {
       setUserLoading(false);
     }
@@ -291,57 +320,91 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                     </form>
                   )}
 
-                  {/* FORM 2: FIRST-TIME USER SIGN UP */}
+                  {/* FORM 2: FIRST-TIME USER SIGN UP WITH EMAIL VERIFICATION CODE */}
                   {userAuthMode === 'signup' && (
-                    <form onSubmit={handleUserRegisterSubmit} className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
-                          <User className="w-3.5 h-3.5 text-cyan-400" /> Full Name
-                        </label>
-                        <input
-                          type="text"
-                          value={userName}
-                          onChange={(e) => {
-                            setUserName(e.target.value);
-                            if (userError) setUserError('');
-                          }}
-                          placeholder="Nitai Roy"
-                          autoFocus
-                          className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-heading text-xs outline-none"
-                        />
-                      </div>
+                    <form onSubmit={signUpStep === 'details' ? handleSendVerificationCode : handleVerifyCodeSubmit} className="space-y-3">
+                      {signUpStep === 'details' ? (
+                        <>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
+                              <User className="w-3.5 h-3.5 text-cyan-400" /> Full Name
+                            </label>
+                            <input
+                              type="text"
+                              value={userName}
+                              onChange={(e) => {
+                                setUserName(e.target.value);
+                                if (userError) setUserError('');
+                              }}
+                              placeholder="Virat Kohli"
+                              autoFocus
+                              className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-heading text-xs outline-none"
+                            />
+                          </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
-                          <Mail className="w-3.5 h-3.5 text-cyan-400" /> Email Address
-                        </label>
-                        <input
-                          type="email"
-                          value={userEmail}
-                          onChange={(e) => {
-                            setUserEmail(e.target.value);
-                            if (userError) setUserError('');
-                          }}
-                          placeholder="nitai@example.com"
-                          className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
-                        />
-                      </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
+                              <Mail className="w-3.5 h-3.5 text-cyan-400" /> Email Address
+                            </label>
+                            <input
+                              type="email"
+                              value={userEmail}
+                              onChange={(e) => {
+                                setUserEmail(e.target.value);
+                                if (userError) setUserError('');
+                              }}
+                              placeholder="example@gmail.com"
+                              className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
+                            />
+                          </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
-                          <KeyRound className="w-3.5 h-3.5 text-cyan-400" /> Create Password
-                        </label>
-                        <input
-                          type="password"
-                          value={userPassword}
-                          onChange={(e) => {
-                            setUserPassword(e.target.value);
-                            if (userError) setUserError('');
-                          }}
-                          placeholder="••••••••"
-                          className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
-                        />
-                      </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
+                              <KeyRound className="w-3.5 h-3.5 text-cyan-400" /> Create Password
+                            </label>
+                            <input
+                              type="password"
+                              value={userPassword}
+                              onChange={(e) => {
+                                setUserPassword(e.target.value);
+                                if (userError) setUserError('');
+                              }}
+                              placeholder="••••••••"
+                              className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/90 border border-slate-800 focus:border-cyan-500 text-white font-mono text-xs outline-none"
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="space-y-3 animate-fadeIn">
+                          <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300">
+                            <span className="font-bold block">✉️ Verification code sent!</span>
+                            <span className="text-[11px] text-slate-300">Check your inbox for <strong>{userEmail}</strong></span>
+                            {demoCodeHint && (
+                              <span className="block mt-1 font-mono text-cyan-400 font-bold text-xs bg-slate-950 px-2 py-1 rounded inline-block">
+                                Code: {demoCodeHint}
+                              </span>
+                            )}
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 mb-1 font-mono flex items-center gap-1.5">
+                              <KeyRound className="w-3.5 h-3.5 text-cyan-400" /> Enter 6-Digit Code
+                            </label>
+                            <input
+                              type="text"
+                              value={verificationCode}
+                              onChange={(e) => {
+                                setVerificationCode(e.target.value);
+                                if (userError) setUserError('');
+                              }}
+                              placeholder="e.g. 849201"
+                              maxLength={6}
+                              autoFocus
+                              className="w-full px-4 py-3 rounded-2xl bg-slate-950/90 border border-cyan-500/60 text-cyan-300 font-mono text-base tracking-widest text-center outline-none"
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       {userError && (
                         <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-medium flex items-center gap-1.5 animate-fadeIn">
@@ -362,13 +425,32 @@ export default function RoleSelectionPortal({ onSelectUserMode, onAuthenticateAd
                         disabled={userLoading}
                         className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 hover:from-emerald-400 hover:to-cyan-500 text-white font-extrabold text-xs shadow-lg shadow-emerald-500/25 transition flex items-center justify-center gap-2"
                       >
-                        {userLoading ? <span>Creating Account...</span> : (
+                        {userLoading ? <span>Processing...</span> : signUpStep === 'details' ? (
                           <>
-                            <UserPlus className="w-4 h-4" />
-                            <span>Create Account</span>
+                            <Mail className="w-4 h-4" />
+                            <span>Send Verification Code</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Verify Code & Create Account</span>
                           </>
                         )}
                       </button>
+
+                      {signUpStep === 'verify' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSignUpStep('details');
+                            setUserError('');
+                            setUserSuccessMsg('');
+                          }}
+                          className="w-full text-center text-xs text-slate-400 hover:text-cyan-300 py-1 font-mono transition"
+                        >
+                          ← Edit Details / Resend Code
+                        </button>
+                      )}
                     </form>
                   )}
 
