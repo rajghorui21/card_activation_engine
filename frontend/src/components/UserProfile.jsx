@@ -9,12 +9,31 @@ export default function UserProfile({ userProfile, selectedCard, setSelectedCard
   const [profileData, setProfileData] = useState({
     name: userProfile?.name || 'Sayan Rudra',
     email: userProfile?.email || 'sayan@benefitguard.ai',
-    phone: '+91 98765 43210',
+    phone: userProfile?.phone || '+91 98765 43210',
     location: 'Mumbai, Maharashtra, India',
     autoClaimEnabled: true,
     smsAlerts: true,
     whatsappAlerts: true
   });
+
+  const [cardList, setCardList] = useState(userProfile?.cards || [
+    { id: 1, card_name: 'American Express Platinum Reserve', card_number_prefix: '3782', card_number_last4: '4092', issuer: 'American Express', card_holder_name: userProfile?.name || 'Sayan Rudra', is_active: true }
+  ]);
+
+  // Synchronize when a new user signs up / profile state updates
+  React.useEffect(() => {
+    if (userProfile) {
+      setProfileData(prev => ({
+        ...prev,
+        name: userProfile.name || prev.name,
+        email: userProfile.email || prev.email,
+        phone: userProfile.phone || prev.phone
+      }));
+      if (userProfile.cards && userProfile.cards.length > 0) {
+        setCardList(userProfile.cards);
+      }
+    }
+  }, [userProfile]);
 
   const handleAvatarUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -26,14 +45,6 @@ export default function UserProfile({ userProfile, selectedCard, setSelectedCard
       reader.readAsDataURL(file);
     }
   };
-
-  const initialCards = userProfile?.cards || [
-    { id: 1, card_name: 'American Express Platinum Reserve', card_number_prefix: '3782', card_number_last4: '4092', issuer: 'American Express', card_holder_name: 'Sayan Rudra', is_active: true },
-    { id: 2, card_name: 'Chase Sapphire Reserve Metal', card_number_prefix: '4111', card_number_last4: '8821', issuer: 'Chase Bank', card_holder_name: 'Sayan Rudra', is_active: true },
-    { id: 3, card_name: 'Capital One Venture X World Elite', card_number_prefix: '4532', card_number_last4: '1094', issuer: 'Capital One', card_holder_name: 'Sayan Rudra', is_active: true }
-  ];
-
-  const [cardList, setCardList] = useState(initialCards);
   const [showAddCardModal, setShowAddCardModal] = useState(false);
   const [addCardError, setAddCardError] = useState('');
   const [newCard, setNewCard] = useState({
